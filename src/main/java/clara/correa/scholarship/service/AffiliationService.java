@@ -31,6 +31,7 @@ public class AffiliationService {
 
 	@Transactional
 	public CustomResponse saveAffiliation(AffiliationDtoRequest affiliationDtoRequest) {
+
 	    Long coordinatorId = affiliationDtoRequest.getCoordinatorAffiliation().getIdCoord();
 	    Long scrumMasterId = affiliationDtoRequest.getScrumMasterAffiliation().getIdSM();
 	    Long instructorId = affiliationDtoRequest.getInstructorAffiliation().getIdInstructor();
@@ -48,19 +49,26 @@ public class AffiliationService {
 	        affiliationDtoRequest.getNameAffiliation(),
 	        affiliationDtoRequest.getStatusAffiliation()
 	    );
-
-	    affiliation.setCoordinatorAffiliation(coordinator);
-	    affiliation.setScrumMasterAffiliation(scrumMaster);
-	    affiliation.setInstructorAffiliation(instructor);
-
-	    affiliationRepository.save(affiliation);
-	    return new CustomResponse(true, "Operação executada com sucesso!");
-        
 	    
+	    if (validationValues(affiliationDtoRequest, affiliation)) {
+	    	return new CustomResponse(false, "Operation Failed, please check the registered value!");
+	    } else {
+		    affiliation.setCoordinatorAffiliation(coordinator);
+		    affiliation.setScrumMasterAffiliation(scrumMaster);
+		    affiliation.setInstructorAffiliation(instructor);
+
+		    affiliationRepository.save(affiliation);
+		    return new CustomResponse(true, "Operação executada com sucesso!");
+	    }
 	}
 
+	private boolean validationValues(AffiliationDtoRequest affiliationDtoRequest, Affiliation affiliation) {
+		return affiliation.getNameAffiliation().isBlank() &&  affiliationDtoRequest.getStatusAffiliation().equalsIgnoreCase("waiting");
+	}
+	
+
 	public AffiliationDtoResponse getByIdAffiliation(Long idAffiliation){
-		Affiliation affiliationGet =  affiliationRepository.findByIdAffiliation(idAffiliation).orElseThrow();
+		Affiliation affiliationGet =  affiliationRepository.findByIdAffiliation(idAffiliation).orElseThrow(() -> new EntityNotFoundException("Class not found, please cheack the registered id!"));
 			AffiliationDtoResponse affiliationDtoResponse = searchAffiliation(affiliationGet);
 			return affiliationDtoResponse;	
 	}
@@ -75,7 +83,7 @@ public class AffiliationService {
             affiliationRepository.save(affiliation);
             return new CustomResponse(true, "Operação executada com sucesso!");
         }
-		return null;
+		return new CustomResponse(false, "Operation Failed, please check the registered value!");
     }
 	
 
