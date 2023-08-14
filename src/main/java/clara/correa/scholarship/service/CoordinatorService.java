@@ -3,6 +3,7 @@ package clara.correa.scholarship.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import clara.correa.scholarship.dto.CoordinatorDtoResponse;
 import clara.correa.scholarship.dto.CoorditanorDtoRequest;
 import clara.correa.scholarship.entity.Coordinator;
 import clara.correa.scholarship.repository.CoordinatorRepository;
@@ -19,5 +20,16 @@ public class CoordinatorService {
 				coordinatorDtoRequest.getEmailCoord()	
 				);
 		coordinatorRepository.save(coordinator);
+	}
+	
+	public CoordinatorDtoResponse getByIdCoord(Long idCoord){
+		Coordinator coordinatorGet =  coordinatorRepository.findById(idCoord).orElseThrow();
+			CoordinatorDtoResponse coordinatorDtoResponse = searchCoord(coordinatorGet);
+			return coordinatorDtoResponse;	
+	}
+	
+	private CoordinatorDtoResponse searchCoord(Coordinator coordinatorGet) {
+		CoordinatorDtoResponse coordinatorDtoResponse = new CoordinatorDtoResponse(coordinatorGet.getIdCoord(), coordinatorGet.getNameCoord(), coordinatorGet.getEmailCoord());
+		return coordinatorDtoResponse;
 	}
 }

@@ -3,6 +3,7 @@ package clara.correa.scholarship.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import clara.correa.scholarship.dto.CoordinatorDtoResponse;
 import clara.correa.scholarship.dto.CoorditanorDtoRequest;
 import clara.correa.scholarship.service.CoordinatorService;
 
@@ -17,4 +18,8 @@ public class CoordinatorController {
 		coordinatorService.saveCoord(coordinatorDto);
 	}
 	
+	@GetMapping("/get/{idCoord}")
+	public CoordinatorDtoResponse getCoordinator (@PathVariable Long idCoord) {
+		return coordinatorService.getByIdCoord(idCoord);
+	}
 }
