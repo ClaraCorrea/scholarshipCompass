@@ -1,5 +1,7 @@
 package clara.correa.scholarship.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +61,7 @@ public class AffiliationService {
 	}
 
 	public AffiliationDtoResponse getByIdAffiliation(Long idAffiliation){
-		Affiliation affiliationGet =  affiliationRepository.findById(idAffiliation).orElseThrow();
+		Affiliation affiliationGet =  affiliationRepository.findByIdAffiliation(idAffiliation).orElseThrow();
 			AffiliationDtoResponse affiliationDtoResponse = searchAffiliation(affiliationGet);
 			return affiliationDtoResponse;	
 	}
@@ -68,5 +70,14 @@ public class AffiliationService {
 		AffiliationDtoResponse affiliationDtoResponse = new AffiliationDtoResponse(affiliationGet.getIdAffiliation(), affiliationGet.getNameAffiliation(), affiliationGet.getStatusAffiliation(), affiliationGet.getCoordinatorAffiliation(), affiliationGet.getScrumMasterAffiliation(), affiliationGet.getInstructorAffiliation());
 		return affiliationDtoResponse;
 	}
+	
+    public Optional<Affiliation> putAffiliation(Affiliation affiliation) {
+        if (affiliationRepository.existsById(affiliation.getIdAffiliation())) {
+            return Optional.of(affiliationRepository.save(affiliation));
+        }
+        return Optional.empty();
+    }
+	
+
 }
 

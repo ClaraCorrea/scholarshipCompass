@@ -14,31 +14,27 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(name="affiliations")
+@Setter
 public class Affiliation {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idAffiliation;
 	
-	@Setter
 	private String nameAffiliation;
 
-	@Setter
 	private String statusAffiliation;
-	
-	@Setter
+
 	@OneToOne
 	@JsonIgnoreProperties("Coordinator")
 	@Cascade({CascadeType.MERGE})
 	private Coordinator coordinatorAffiliation;
-	
-	@Setter
+
 	@OneToOne
 	@JsonIgnoreProperties("ScrumMaster")
 	@Cascade({CascadeType.MERGE})
 	private ScrumMaster scrumMasterAffiliation;
-	
-	@Setter
+
 	@OneToOne
 	@JsonIgnoreProperties("Instructor")
 	@Cascade({CascadeType.MERGE})
