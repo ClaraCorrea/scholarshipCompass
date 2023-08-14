@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import clara.correa.scholarship.dto.AffiliationDtoRequest;
+import clara.correa.scholarship.dto.AffiliationDtoResponse;
 import clara.correa.scholarship.entity.Affiliation;
 import clara.correa.scholarship.entity.Coordinator;
 import clara.correa.scholarship.entity.Instructor;
@@ -55,6 +56,17 @@ public class AffiliationService {
 	    String avise = "saved";
 	    return avise;
 	    
+	}
+
+	public AffiliationDtoResponse getByIdAffiliation(Long idAffiliation){
+		Affiliation affiliationGet =  affiliationRepository.findById(idAffiliation).orElseThrow();
+			AffiliationDtoResponse affiliationDtoResponse = searchAffiliation(affiliationGet);
+			return affiliationDtoResponse;	
+	}
+	
+	private AffiliationDtoResponse searchAffiliation(Affiliation affiliationGet) {
+		AffiliationDtoResponse affiliationDtoResponse = new AffiliationDtoResponse(affiliationGet.getIdAffiliation(), affiliationGet.getNameAffiliation(), affiliationGet.getStatusAffiliation(), affiliationGet.getCoordinatorAffiliation(), affiliationGet.getScrumMasterAffiliation(), affiliationGet.getInstructorAffiliation());
+		return affiliationDtoResponse;
 	}
 }
 
