@@ -1,7 +1,5 @@
 package clara.correa.scholarship.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import clara.correa.scholarship.dto.AffiliationDtoRequest;
 import clara.correa.scholarship.dto.AffiliationDtoResponse;
 import clara.correa.scholarship.entity.Affiliation;
+import clara.correa.scholarship.exception.CustomResponse;
 import clara.correa.scholarship.service.AffiliationService;
 
 @RestController
@@ -25,8 +24,9 @@ public class AffiliationController {
 	private AffiliationService affiliationService;
 	
 	@PostMapping("/post")
-	public void saveAffiliation(@RequestBody AffiliationDtoRequest affiliationDtoRequest) {
-		affiliationService.saveAffiliation2(affiliationDtoRequest);
+	public ResponseEntity<CustomResponse> saveAffiliation(@RequestBody AffiliationDtoRequest affiliationDtoRequest) {
+		CustomResponse response = affiliationService.saveAffiliation(affiliationDtoRequest);
+        return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping("/get/{idAffiliation}")
@@ -35,11 +35,9 @@ public class AffiliationController {
 	}
 	
     @PutMapping("/put/{idAffiliation}")
-    public ResponseEntity<Affiliation> putAffiliation(@PathVariable Long idAffiliation, @RequestBody Affiliation updatedAffiliation) {
+    public ResponseEntity<CustomResponse> putAffiliation(@PathVariable Long idAffiliation, @RequestBody Affiliation updatedAffiliation) {
         updatedAffiliation.setIdAffiliation(idAffiliation); 
-        Optional<Affiliation> result = affiliationService.putAffiliation(updatedAffiliation);
-
-        return result.map(ResponseEntity::ok)
-                     .orElse(ResponseEntity.notFound().build());
+        CustomResponse response = affiliationService.putAffiliation(updatedAffiliation);
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,7 +1,5 @@
 package clara.correa.scholarship.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +10,7 @@ import clara.correa.scholarship.entity.Affiliation;
 import clara.correa.scholarship.entity.Coordinator;
 import clara.correa.scholarship.entity.Instructor;
 import clara.correa.scholarship.entity.ScrumMaster;
+import clara.correa.scholarship.exception.CustomResponse;
 import clara.correa.scholarship.repository.AffiliationRepository;
 import clara.correa.scholarship.repository.CoordinatorRepository;
 import clara.correa.scholarship.repository.InstructorRepository;
@@ -31,7 +30,7 @@ public class AffiliationService {
 	private InstructorRepository instructorRepository;
 
 	@Transactional
-	public String saveAffiliation2(AffiliationDtoRequest affiliationDtoRequest) {
+	public CustomResponse saveAffiliation(AffiliationDtoRequest affiliationDtoRequest) {
 	    Long coordinatorId = affiliationDtoRequest.getCoordinatorAffiliation().getIdCoord();
 	    Long scrumMasterId = affiliationDtoRequest.getScrumMasterAffiliation().getIdSM();
 	    Long instructorId = affiliationDtoRequest.getInstructorAffiliation().getIdInstructor();
@@ -55,8 +54,8 @@ public class AffiliationService {
 	    affiliation.setInstructorAffiliation(instructor);
 
 	    affiliationRepository.save(affiliation);
-	    String avise = "saved";
-	    return avise;
+	    return new CustomResponse(true, "Operação executada com sucesso!");
+        
 	    
 	}
 
@@ -71,11 +70,12 @@ public class AffiliationService {
 		return affiliationDtoResponse;
 	}
 	
-    public Optional<Affiliation> putAffiliation(Affiliation affiliation) {
+    public CustomResponse putAffiliation(Affiliation affiliation) {
         if (affiliationRepository.existsById(affiliation.getIdAffiliation())) {
-            return Optional.of(affiliationRepository.save(affiliation));
+            affiliationRepository.save(affiliation);
+            return new CustomResponse(true, "Operação executada com sucesso!");
         }
-        return Optional.empty();
+		return null;
     }
 	
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import clara.correa.scholarship.dto.StudentDtoRequest;
 import clara.correa.scholarship.dto.StudentDtoResponse;
 import clara.correa.scholarship.entity.Student;
+import clara.correa.scholarship.exception.CustomResponse;
 import clara.correa.scholarship.repository.StudentRepository;
 
 @Service
@@ -14,12 +15,13 @@ public class StudentService {
 	@Autowired
 	private StudentRepository studentRepository;
 
-	public void saveStudent(StudentDtoRequest studentDtoRequest) {
+	public CustomResponse saveStudent(StudentDtoRequest studentDtoRequest) {
 		Student student = new Student (
 				studentDtoRequest.getNameStudent(),
 				studentDtoRequest.getEmailStudent()
 				);
 		studentRepository.save(student);
+	    return new CustomResponse(true, "Operação executada com sucesso!");
 	}
 
 	public StudentDtoResponse getByIdStudent(Long idStudent) {
