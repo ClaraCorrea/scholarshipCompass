@@ -18,13 +18,16 @@ public class ScrumMaster {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Cascade({CascadeType.MERGE})
+	@Column(name="id_scrumMaster")
 	private Long idSM;
 	
 	@Setter
+	@Column(name="name_scrumMaster")
 	private String nameSM;
 	
 	@Setter
 	@Email
+	@Column(name="email_scrumMaster")
 	private String emailSM;
 
 	public ScrumMaster(String nameSM, String emailSM) {

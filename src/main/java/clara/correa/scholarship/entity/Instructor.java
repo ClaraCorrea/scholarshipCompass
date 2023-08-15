@@ -18,13 +18,16 @@ public class Instructor {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Cascade({CascadeType.MERGE})
+	@Column(name="id_instructor")
 	private Long idInstructor;
 	
 	@Setter
+	@Column(name="name_instructor")
 	private String nameInstructor;
 	
 	@Setter
 	@Email
+	@Column(name="email_instructor")
 	private String emailInstructor;
 	
 	public Instructor(String nameInstructor, String emailInstructor) {

@@ -16,28 +16,33 @@ import lombok.NoArgsConstructor;
 @Table(name="affiliations")
 @Setter
 public class Affiliation {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id_affiliation")
 	private Long idAffiliation;
 	
+	@Column(name="name_affiliation")
 	private String nameAffiliation;
 
+	@Column(name="status_affiliation")
 	private String statusAffiliation;
 
-	@OneToOne
-	@JsonIgnoreProperties("Coordinator")
-	@Cascade({CascadeType.MERGE})
+    @OneToOne
+    @JsonIgnoreProperties("coordinatorAffiliation")
+    @Cascade({CascadeType.MERGE})
+    @PrimaryKeyJoinColumn
 	private Coordinator coordinatorAffiliation;
 
-	@OneToOne
-	@JsonIgnoreProperties("ScrumMaster")
-	@Cascade({CascadeType.MERGE})
+    @OneToOne
+    @JsonIgnoreProperties("scrumMasterAffiliation") 
+    @Cascade({CascadeType.MERGE})
+    @JoinColumn(name = "scrumMaster_idAffiliation")
 	private ScrumMaster scrumMasterAffiliation;
 
-	@OneToOne
-	@JsonIgnoreProperties("Instructor")
-	@Cascade({CascadeType.MERGE})
+    @OneToOne
+    @JsonIgnoreProperties("instructorAffiliation")
+    @Cascade({CascadeType.MERGE})
+    @JoinColumn(name = "instructor_idAffiliation")
 	private Instructor instructorAffiliation;
 	
 	public Affiliation(String nameAffiliation, String statusAffiliation, Coordinator coordinatorAffiliation, ScrumMaster scrumMasterAffiliation, Instructor instructorAffiliation) {
