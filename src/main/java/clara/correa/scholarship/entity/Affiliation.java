@@ -40,8 +40,11 @@ public class Affiliation {
 	@Cascade({CascadeType.MERGE})
 	private Instructor instructorAffiliation;
 	
-	public Affiliation(String nameAffiliation, String statusAffiliation) {
+	public Affiliation(String nameAffiliation, String statusAffiliation, Coordinator coordinatorAffiliation, ScrumMaster scrumMasterAffiliation, Instructor instructorAffiliation) {
 		this.nameAffiliation = nameAffiliation;
 		this.statusAffiliation = statusAffiliation;	
+		this.coordinatorAffiliation = coordinatorAffiliation;
+		this.scrumMasterAffiliation = scrumMasterAffiliation;
+		this.instructorAffiliation = instructorAffiliation;
 	}
 }

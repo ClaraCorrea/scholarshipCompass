@@ -47,23 +47,22 @@ public class AffiliationService {
 
 	    Affiliation affiliation = new Affiliation(
 	        affiliationDtoRequest.getNameAffiliation(),
-	        affiliationDtoRequest.getStatusAffiliation()
+	        affiliationDtoRequest.getStatusAffiliation(),
+	        coordinator,
+	        scrumMaster,
+	        instructor
 	    );
 	    
 	    if (validationValues(affiliationDtoRequest, affiliation)) {
 	    	return new CustomResponse(false, "Operation Failed, please check the registered value!");
 	    } else {
-		    affiliation.setCoordinatorAffiliation(coordinator);
-		    affiliation.setScrumMasterAffiliation(scrumMaster);
-		    affiliation.setInstructorAffiliation(instructor);
-
 		    affiliationRepository.save(affiliation);
 		    return new CustomResponse(true, "Operação executada com sucesso!");
 	    }
 	}
 
 	private boolean validationValues(AffiliationDtoRequest affiliationDtoRequest, Affiliation affiliation) {
-		return affiliation.getNameAffiliation().isBlank() &&  affiliationDtoRequest.getStatusAffiliation().equalsIgnoreCase("waiting");
+		return affiliation.getNameAffiliation().isBlank() &&  !affiliationDtoRequest.getStatusAffiliation().equalsIgnoreCase("waiting");
 	}
 	
 
@@ -83,6 +82,8 @@ public class AffiliationService {
             affiliationRepository.save(affiliation);
             return new CustomResponse(true, "Operação executada com sucesso!");
         }
+        //Long value = studentRepository.countByAffiliation(affiliation);
+        //System.out.print(value);
 		return new CustomResponse(false, "Operation Failed, please check the registered value!");
     }
 	

@@ -1,0 +1,28 @@
+
+Coordinator:
+Amelia Silas,amelia@gmail.com
+Pedro Silvas, pedro@gmail.com
+Antony Vere,antony@gmail.com
+Scrum_Master:
+John Souza,john@example.com
+Jane Pascal,jane@example.com
+Henrique Junir,henrique@gmail.com
+Instructor:
+Eliza Sequeira ,eliza@example.com
+Julia Duart,Julia@example.com
+Hermione Doofenshmirtz,hermione@gmail.com
+Student:
+Luiz Spezin,luiz@example.com
+Cezar Campos,cezar@example.com
+Jonatan Albuquerque,Jonatan@gmail.com
+Emilia da Rosa, emilia@gmail.com
+Flora Matos,flora@gmail.com
+Jennet Souza,jennet@gmail.com
+Pedro Henrique Silva,pedroHenrique@gmail.com
+Maria Gonsalvez,maria@gmail.com
+Jose Teixeira,jose@gmail.com
+Eloa Fenandez,eloa@gmail.com
+Jackson Ramirez,jackson@gmail.com
+Bianca Andrade,bianca@gmail.com
+Mathias Almeida,mathias@gmail.com
+Alice Cardoso,alice@gmail.com

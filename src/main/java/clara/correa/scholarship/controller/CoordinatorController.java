@@ -1,5 +1,8 @@
 package clara.correa.scholarship.controller;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +24,16 @@ public class CoordinatorController {
         return ResponseEntity.ok(response);
 	}
 	
+	@PostMapping("/post/All")
+	public ResponseEntity<CustomResponse> postAll () throws FileNotFoundException, IOException{
+		CustomResponse response = coordinatorService.postAll();
+        return ResponseEntity.ok(response);
+	}
+	
 	@GetMapping("/get/{idCoord}")
 	public CoordinatorDtoResponse getCoordinator (@PathVariable Long idCoord) {
 		return coordinatorService.getByIdCoord(idCoord);
 	}
+	
+
 }

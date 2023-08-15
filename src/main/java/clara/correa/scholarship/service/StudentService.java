@@ -1,5 +1,4 @@
 package clara.correa.scholarship.service;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ public class StudentService {
 	private StudentRepository studentRepository;
 
 	public CustomResponse saveStudent(StudentDtoRequest studentDtoRequest) {
-		Student student = new Student (
+	    Student student = new Student (
 				studentDtoRequest.getNameStudent(),
 				studentDtoRequest.getEmailStudent()
 				);
