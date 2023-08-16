@@ -1,5 +1,6 @@
 package clara.correa.scholarship.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +31,20 @@ public class RelationStudentAffiliationService {
         		combinedIdDto.getStudentId(), 
         		combinedIdDto.getAffiliationId()
         		);
-   
+        
+    	int value = countStudentsByAffiliation(combinedIdDto.getAffiliationId());
         if (validateCombinedId(combinedId1)) {
-            RelationStudentAffiliation relation = new RelationStudentAffiliation();
-            relation.setId(combinedId1);
-            
-            relationRepository.save(relation);
-            
-            return new CustomResponse(true, "Operação executada com sucesso!");
-        } else {
-            return new CustomResponse(false, "IDs inválidos.");
-        }
+        	if(value < 31) {
+                RelationStudentAffiliation relation = new RelationStudentAffiliation();
+                relation.setId(combinedId1);
+                
+                relationRepository.save(relation);            
+                return new CustomResponse(true, "Operação executada com sucesso!");
+        	} else {
+        		return new CustomResponse(false, "Affiliation cheia!");
+        	}
+        } 
+        return new CustomResponse(false, "IDs inválidos.");
     }
 
     public boolean validateCombinedId(CombinedId combinedId1) {
@@ -60,6 +64,11 @@ public class RelationStudentAffiliationService {
             return false;
         }
 		return true;
+    }
+    
+    public int countStudentsByAffiliation(Affiliation affiliation) {
+        List<RelationStudentAffiliation> studentsWithAffiliation = relationRepository.findByAffiliation(affiliation);
+        return studentsWithAffiliation.size();
     }
 }
 

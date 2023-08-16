@@ -28,6 +28,8 @@ public class AffiliationService {
 	private ScrumMasterRepository scrumMasterRepository;
 	@Autowired
 	private InstructorRepository instructorRepository;
+	@Autowired
+	private RelationStudentAffiliationService relationStudentAffiliationService;
 
 	@Transactional
 	public CustomResponse saveAffiliation(AffiliationDtoRequest affiliationDtoRequest) {
@@ -53,16 +55,16 @@ public class AffiliationService {
 	        instructor
 	    );
 	    
-	    if (validationValues(affiliationDtoRequest, affiliation)) {
+	    if (validationValues(affiliationDtoRequest)) {
 	    	return new CustomResponse(false, "Operation Failed, please check the registered value!");
 	    } else {
 		    affiliationRepository.save(affiliation);
-		    return new CustomResponse(true, "Operação executada com sucesso!");
+		    return new CustomResponse(true, "Operation executed successfully!");
 	    }
 	}
 
-	private boolean validationValues(AffiliationDtoRequest affiliationDtoRequest, Affiliation affiliation) {
-		return affiliation.getNameAffiliation().isBlank() &&  !affiliationDtoRequest.getStatusAffiliation().equalsIgnoreCase("waiting");
+	private boolean validationValues(AffiliationDtoRequest affiliationDtoRequest) {
+		return affiliationDtoRequest.getNameAffiliation().isBlank() ||  !affiliationDtoRequest.getStatusAffiliation().equalsIgnoreCase("waiting");
 	}
 	
 
@@ -77,16 +79,37 @@ public class AffiliationService {
 		return affiliationDtoResponse;
 	}
 	
-    public CustomResponse putAffiliation(Affiliation affiliation) {
+	public CustomResponse putAffiliation(Affiliation affiliation) {
         if (affiliationRepository.existsById(affiliation.getIdAffiliation())) {
-            affiliationRepository.save(affiliation);
-            return new CustomResponse(true, "Operação executada com sucesso!");
+            Affiliation existingAffiliation = affiliationRepository.findById(affiliation.getIdAffiliation()).get();
+            
+            if (validationStatusChange(affiliation, existingAffiliation)) {
+                int studentCount = relationStudentAffiliationService.countStudentsByAffiliation(existingAffiliation);
+                if (studentCount >= 15) {
+                	if(validationStatusValue(affiliation)) {
+                        affiliationRepository.save(affiliation);
+                        return new CustomResponse(true, "Operation executed successfully!");
+                	} else {
+                		return new CustomResponse(true, "Please enter a valid status! (waiting, started or finished)!");
+                	}
+                } else {
+                    return new CustomResponse(false, "Cannot change status. Less than 15 students are linked to this affiliation.");
+                }
+            } else {
+                affiliationRepository.save(affiliation);
+                return new CustomResponse(true, "Operation executed successfully!");
+            }
         }
-        //Long value = studentRepository.countByAffiliation(affiliation);
-        //System.out.print(value);
-		return new CustomResponse(false, "Operation Failed, please check the registered value!");
+        return new CustomResponse(false, "Operation Failed, please check the registered value!");
     }
-	
+
+	private boolean validationStatusValue(Affiliation affiliation) {
+		return affiliation.getStatusAffiliation().equalsIgnoreCase("started") || affiliation.getStatusAffiliation().equalsIgnoreCase("finished") || affiliation.getStatusAffiliation().equalsIgnoreCase("waiting");
+	}
+
+	private boolean validationStatusChange(Affiliation affiliation, Affiliation existingAffiliation) {
+		return !existingAffiliation.getStatusAffiliation().equals(affiliation.getStatusAffiliation());
+	}
 
 }
 

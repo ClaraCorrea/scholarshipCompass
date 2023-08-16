@@ -18,7 +18,6 @@ import clara.correa.scholarship.repository.StudentRepository;
 public class SquadService {
     @Autowired
     private SquadRepository squadRepository;
-
     @Autowired
     private StudentRepository studentRepository;
 
