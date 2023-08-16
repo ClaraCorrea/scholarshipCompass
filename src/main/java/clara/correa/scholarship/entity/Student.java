@@ -9,6 +9,7 @@ import lombok.Setter;
 @Entity
 @Table(name="students")
 @Getter
+@Setter
 @RequiredArgsConstructor
 public class Student {
 	
@@ -17,12 +18,10 @@ public class Student {
 	@Column(name="id_student")
 	private Long idStudent;
 	
-	@Setter
 	@Column(name="name_student")
 	private String nameStudent;
 	
 	@Email
-	@Setter
 	@Column(name="email_student")
 	private String emailStudent;
 

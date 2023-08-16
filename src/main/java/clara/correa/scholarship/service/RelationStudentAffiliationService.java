@@ -34,17 +34,17 @@ public class RelationStudentAffiliationService {
         
     	int value = countStudentsByAffiliation(combinedIdDto.getAffiliationId());
         if (validateCombinedId(combinedId1)) {
-        	if(value < 31) {
+        	if(value < 30) {
                 RelationStudentAffiliation relation = new RelationStudentAffiliation();
                 relation.setId(combinedId1);
                 
                 relationRepository.save(relation);            
-                return new CustomResponse(true, "Operação executada com sucesso!");
+                return new CustomResponse(true, "Operation executed successfully!");
         	} else {
-        		return new CustomResponse(false, "Affiliation cheia!");
+        		return new CustomResponse(false, "Operation failed! Class full! Limit of 31 students reached");
         	}
         } 
-        return new CustomResponse(false, "IDs inválidos.");
+        return new CustomResponse(false, "Operation failed! 1 or more invalid ids");
     }
 
     public boolean validateCombinedId(CombinedId combinedId1) {

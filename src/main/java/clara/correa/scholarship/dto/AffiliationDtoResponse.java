@@ -5,7 +5,6 @@ import java.util.List;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import clara.correa.scholarship.entity.Coordinator;
-import clara.correa.scholarship.entity.Instructor;
 import clara.correa.scholarship.entity.ScrumMaster;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
