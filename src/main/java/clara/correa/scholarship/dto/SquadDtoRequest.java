@@ -12,7 +12,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class SquadDtoRequest {
-    private Long idSquad;
     private String nameSquad;
 	@JsonDeserialize
     private List<Long> studentIds;

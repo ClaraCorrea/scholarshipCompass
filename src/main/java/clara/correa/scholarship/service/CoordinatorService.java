@@ -41,7 +41,7 @@ public class CoordinatorService {
 				coordinatorDtoRequest.getEmailCoord()	
 				);
 		coordinatorRepository.save(coordinator);
-	    return new CustomResponse(true, "Operação executada com sucesso!");
+	    return new CustomResponse(true, "Operation executed successfully!");
 	}
 	
 	public CoordinatorDtoResponse getByIdCoord(Long idCoord){
@@ -63,7 +63,7 @@ public class CoordinatorService {
         
         File dataSource = new File("src\\main\\resources\\dataSource.txt");
         if (!dataSource.exists()) {
-            return new CustomResponse(false, "Arquivo não encontrado!");
+            return new CustomResponse(false, "File not found!");
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(dataSource))) {
@@ -107,12 +107,12 @@ public class CoordinatorService {
 	                }
 	            } 
         	} catch  (IOException e) {
-	          	return new CustomResponse(false, "Erro na leitura do arquivo");
+	          	return new CustomResponse(false, "Error reading the file");
         	} 
 	    	if (coordinators.isEmpty() && scrumMasters.isEmpty() && instructors.isEmpty() && students.isEmpty()) {
-	            return new CustomResponse(false, "Arquivo vazio ou formato incorreto");
+	            return new CustomResponse(false, "Empty file or incorrect format");
 	        } 
-	    	return new CustomResponse(true, "Operação executada com sucesso!");
+	    	return new CustomResponse(true, "Operation executed successfully!");
 
 	}
 }

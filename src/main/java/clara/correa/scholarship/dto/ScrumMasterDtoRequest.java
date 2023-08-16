@@ -1,15 +1,14 @@
 package clara.correa.scholarship.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Data 
 @Getter 
 @Setter
+@AllArgsConstructor
 public class ScrumMasterDtoRequest {
-	
 	@NotBlank
 	private String nameSM;
 	
