@@ -2,6 +2,7 @@ package clara.correa.scholarship.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,4 +31,10 @@ public class StudentController {
 	public StudentDtoResponse getStudent (@PathVariable Long idStudent){
 		return studentService.getByIdStudent(idStudent);
 	}
+	
+    @DeleteMapping("delete/{studentId}")
+    public void deleteStudent(@PathVariable Long studentId) {
+            studentService.deleteStudentById(studentId);
+
+    }
 }

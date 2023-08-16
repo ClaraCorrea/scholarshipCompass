@@ -12,6 +12,7 @@ public class RelationStudentAffiliation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_relation")
+    @EmbeddedId
 	private CombinedId id;
 
 }
