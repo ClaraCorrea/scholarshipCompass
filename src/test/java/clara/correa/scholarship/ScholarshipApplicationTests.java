@@ -1,64 +1,73 @@
 package clara.correa.scholarship;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import clara.correa.scholarship.dto.AffiliationDtoRequest;
 import clara.correa.scholarship.entity.Coordinator;
-import clara.correa.scholarship.entity.Instructor;
 import clara.correa.scholarship.entity.ScrumMaster;
 import clara.correa.scholarship.exception.CustomResponse;
+import clara.correa.scholarship.repository.CoordinatorRepository;
 import clara.correa.scholarship.service.AffiliationService;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 class ScholarshipApplicationTests {
 
-	@Test
-	public void testExecutaAffiliation() {
-	    String nameAffiliation = "Class 1";
-	    String statusAffiliation = "waiting";
-	    
-	    String nameCoord = "Coord1";
-	    String emailCoord = "coord1@gmail.com";
-	    
-	    String nameSM = "SM1";
-	    String emailSM = "SM1@gmail.com";
-	    
-	    String nameInstructor = "Instructor1";
-	    String emailInstructor = "Instructor1@gmail.com";
-	    
-	    
-	    Coordinator coordinatorAffiliation = new Coordinator(
-		        nameCoord,
-		        emailCoord
-		    );
+    @MockBean
+    private AffiliationService affiliationService;
 
-	    ScrumMaster scrumMasterAffiliation = new ScrumMaster(
-		        nameSM,
-		        emailSM
-		    );
+    @MockBean
+    private CoordinatorRepository coordinatorRepository;
 
-	    Instructor instructorAffiliation = new Instructor(
-	    		nameInstructor,
-		        emailInstructor
-		    );
-	    
-	    CustomResponse esperado = new CustomResponse(true, "Operação executada com sucesso!");
-	    
-	    AffiliationDtoRequest affiliation = new AffiliationDtoRequest(
-	        nameAffiliation,
-	        statusAffiliation,
-	        coordinatorAffiliation,
-	        scrumMasterAffiliation,
-	        instructorAffiliation
-	    );
-	    
-	    AffiliationService affiliationService = new AffiliationService();
-	    CustomResponse resultado = affiliationService.saveAffiliation(affiliation);
-	    
-	    assertEquals(esperado, resultado);
-	}
+    @Test
+    public void testExecutaAffiliation() {
+        String nameAffiliation = "Class 1";
+        String statusAffiliation = "waiting";
+
+        String nameCoord = "Coord1";
+        String emailCoord = "coord1@gmail.com";
+
+        String nameSM = "SM1";
+        String emailSM = "SM1@gmail.com";
+
+        List<Integer> instructorsAffiliation = Arrays.asList(1, 2, 3);
+
+        Coordinator coordinatorAffiliation = new Coordinator(
+            nameCoord,
+            emailCoord
+        );
+
+        ScrumMaster scrumMasterAffiliation = new ScrumMaster(
+            nameSM,
+            emailSM
+        );
+
+        AffiliationDtoRequest affiliation = new AffiliationDtoRequest(
+            nameAffiliation,
+            statusAffiliation,
+            coordinatorAffiliation,
+            scrumMasterAffiliation,
+            instructorsAffiliation.stream().map(Long::valueOf).collect(Collectors.toList())
+        );
+
+        CustomResponse expected = new CustomResponse(true, "Operation executed successfully!");
+
+        when(affiliationService.saveAffiliation(affiliation)).thenReturn(expected);
+
+        CustomResponse result = affiliationService.saveAffiliation(affiliation);
+
+        assertEquals(expected.isSuccess(), result.isSuccess());
+        assertEquals(expected.getMessage(), result.getMessage());
+    }
 
 }

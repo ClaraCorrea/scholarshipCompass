@@ -1,5 +1,9 @@
 package clara.correa.scholarship.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,50 +22,62 @@ import clara.correa.scholarship.repository.ScrumMasterRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class AffiliationService {
-	
-	@Autowired
-	private AffiliationRepository affiliationRepository;
-	@Autowired
-	private CoordinatorRepository coordinatorRepository;
-	@Autowired
-	private ScrumMasterRepository scrumMasterRepository;
-	@Autowired
-	private InstructorRepository instructorRepository;
-	@Autowired
-	private RelationStudentAffiliationService relationStudentAffiliationService;
+public class AffiliationService {	
+    @Autowired
+    private AffiliationRepository affiliationRepository;
+    @Autowired
+    private CoordinatorRepository coordinatorRepository;
+    @Autowired
+    private ScrumMasterRepository scrumMasterRepository;
+    @Autowired
+    private InstructorRepository instructorRepository;
+    @Autowired
+    private RelationStudentAffiliationService relationStudentAffiliationService;
 
-	@Transactional
-	public CustomResponse saveAffiliation(AffiliationDtoRequest affiliationDtoRequest) {
+    @Transactional
+    public CustomResponse saveAffiliation(AffiliationDtoRequest affiliationDtoRequest) {
 
-	    Long coordinatorId = affiliationDtoRequest.getCoordinatorAffiliation().getIdCoord();
-	    Long scrumMasterId = affiliationDtoRequest.getScrumMasterAffiliation().getIdSM();
-	    Long instructorId = affiliationDtoRequest.getInstructorAffiliation().getIdInstructor();
+        Long coordinatorId = affiliationDtoRequest.getCoordinatorAffiliation().getIdCoord();
+        Long scrumMasterId = affiliationDtoRequest.getScrumMasterAffiliation().getIdSM();
 
-	    Coordinator coordinator = coordinatorRepository.findById(coordinatorId)
-	            .orElseThrow(() -> new EntityNotFoundException("Coordinator not found"));
+        Coordinator coordinator = coordinatorRepository.findById(coordinatorId)
+                .orElseThrow(() -> new EntityNotFoundException("Coordinator not found"));
 
-	    ScrumMaster scrumMaster = scrumMasterRepository.findById(scrumMasterId)
-	            .orElseThrow(() -> new EntityNotFoundException("ScrumMaster not found"));
+        ScrumMaster scrumMaster = scrumMasterRepository.findById(scrumMasterId)
+                .orElseThrow(() -> new EntityNotFoundException("ScrumMaster not found"));
+        
+    	int counter = 0;
+        Affiliation affiliation = new Affiliation(
+                affiliationDtoRequest.getNameAffiliation(),
+                affiliationDtoRequest.getStatusAffiliation(),
+                coordinator,
+                scrumMaster,
+                null
+        );
+        
+        if(validationValues(affiliationDtoRequest)) {
+        	return new CustomResponse(false, "The operation failed! Please enter valid values");
+        } else {
+            List<Long> instructorsIds = affiliationDtoRequest.getInstructorsAffiliation();
+            List<Long> instructorsToSave = new ArrayList<>();
 
-	    Instructor instructor = instructorRepository.findById(instructorId)
-	            .orElseThrow(() -> new EntityNotFoundException("Instructor not found"));
+            for (Long instructorsId : instructorsIds) {
+                Optional<Instructor> optionalStudent = instructorRepository.findById(instructorsId);
+                optionalStudent.ifPresent(instructor -> instructorsToSave.add(instructor.getIdInstructor()));
+                counter++;
+            }
+            
+            if(counter > 3) {
+                return new CustomResponse(false, "Operation failed! Please enter only 3 members in a class");
+            } else {
+                affiliation.setInstructorsAffiliation(instructorsToSave);;
+                affiliationRepository.save(affiliation);
 
-	    Affiliation affiliation = new Affiliation(
-	        affiliationDtoRequest.getNameAffiliation(),
-	        affiliationDtoRequest.getStatusAffiliation(),
-	        coordinator,
-	        scrumMaster,
-	        instructor
-	    );
-	    
-	    if (validationValues(affiliationDtoRequest)) {
-	    	return new CustomResponse(false, "Operation Failed, please check the registered value!");
-	    } else {
-		    affiliationRepository.save(affiliation);
-		    return new CustomResponse(true, "Operation executed successfully!");
-	    }
-	}
+                return new CustomResponse(true, "Operation executed successfully!");
+            }
+        }
+    }
+
 
 	private boolean validationValues(AffiliationDtoRequest affiliationDtoRequest) {
 		return affiliationDtoRequest.getNameAffiliation().isBlank() ||  !affiliationDtoRequest.getStatusAffiliation().equalsIgnoreCase("waiting");
@@ -75,7 +91,7 @@ public class AffiliationService {
 	}
 	
 	private AffiliationDtoResponse searchAffiliation(Affiliation affiliationGet) {
-		AffiliationDtoResponse affiliationDtoResponse = new AffiliationDtoResponse(affiliationGet.getIdAffiliation(), affiliationGet.getNameAffiliation(), affiliationGet.getStatusAffiliation(), affiliationGet.getCoordinatorAffiliation(), affiliationGet.getScrumMasterAffiliation(), affiliationGet.getInstructorAffiliation());
+		AffiliationDtoResponse affiliationDtoResponse = new AffiliationDtoResponse(affiliationGet.getIdAffiliation(), affiliationGet.getNameAffiliation(), affiliationGet.getStatusAffiliation(), affiliationGet.getCoordinatorAffiliation(), affiliationGet.getScrumMasterAffiliation(), affiliationGet.getInstructorsAffiliation());
 		return affiliationDtoResponse;
 	}
 	
@@ -86,11 +102,11 @@ public class AffiliationService {
             if (validationStatusChange(affiliation, existingAffiliation)) {
                 int studentCount = relationStudentAffiliationService.countStudentsByAffiliation(existingAffiliation);
                 if (studentCount >= 15) {
-                	if(validationStatusValue(affiliation)) {
+                	if(validationRulesMet(affiliation)) {
                         affiliationRepository.save(affiliation);
                         return new CustomResponse(true, "Operation executed successfully!");
                 	} else {
-                		return new CustomResponse(true, "Please enter a valid status! (waiting, started or finished)!");
+                		return new CustomResponse(true, "Operation Failed, please check if the submitted status is acceptable and if there are enough instructors registered in the class");
                 	}
                 } else {
                     return new CustomResponse(false, "Cannot change status. Less than 15 students are linked to this affiliation.");
@@ -103,13 +119,21 @@ public class AffiliationService {
         return new CustomResponse(false, "Operation Failed, please check the registered value!");
     }
 
-	private boolean validationStatusValue(Affiliation affiliation) {
-		return affiliation.getStatusAffiliation().equalsIgnoreCase("started") || affiliation.getStatusAffiliation().equalsIgnoreCase("finished") || affiliation.getStatusAffiliation().equalsIgnoreCase("waiting");
+	private boolean validationRulesMet(Affiliation affiliation) {
+	    if (affiliation.getStatusAffiliation().equalsIgnoreCase("started") ||
+	            affiliation.getStatusAffiliation().equalsIgnoreCase("finished") ||
+	            affiliation.getStatusAffiliation().equalsIgnoreCase("waiting")) {
+
+	        List<Instructor> instructors = instructorRepository.findAllById(affiliation.getInstructorsAffiliation());
+	        boolean hasExactlyThreeInstructors = instructors.size() >= 3;
+
+	        return hasExactlyThreeInstructors;
+	    }
+	    return false;
 	}
+
 
 	private boolean validationStatusChange(Affiliation affiliation, Affiliation existingAffiliation) {
 		return !existingAffiliation.getStatusAffiliation().equals(affiliation.getStatusAffiliation());
 	}
-
 }
-

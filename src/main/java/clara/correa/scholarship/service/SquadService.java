@@ -23,7 +23,10 @@ public class SquadService {
 
     public CustomResponse saveSquad(SquadDtoRequest squadDtoRequest) {
     	int counter = 0;
-        Squad squad = new Squad(squadDtoRequest.getNameSquad(), null);
+        Squad squad = new Squad(
+        		squadDtoRequest.getNameSquad(), 
+        		null
+        		);
 
         List<Long> studentIds = squadDtoRequest.getStudentIds();
         List<Long> studentIdsToSave = new ArrayList<>();

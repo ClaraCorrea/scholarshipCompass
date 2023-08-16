@@ -1,7 +1,6 @@
 package clara.correa.scholarship.entity;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -29,27 +28,27 @@ public class Affiliation {
 
     @OneToOne
     @JsonIgnoreProperties("coordinatorAffiliation")
-    @Cascade({CascadeType.MERGE})
-    @PrimaryKeyJoinColumn
-	private Coordinator coordinatorAffiliation;
+    private Coordinator coordinatorAffiliation;
 
     @OneToOne
-    @JsonIgnoreProperties("scrumMasterAffiliation") 
-    @Cascade({CascadeType.MERGE})
-    @JoinColumn(name = "scrumMaster_idAffiliation")
-	private ScrumMaster scrumMasterAffiliation;
+    @JsonIgnoreProperties("scrumMasterAffiliation")
+    private ScrumMaster scrumMasterAffiliation;
 
-    @OneToOne
-    @JsonIgnoreProperties("instructorAffiliation")
-    @Cascade({CascadeType.MERGE})
-    @JoinColumn(name = "instructor_idAffiliation")
-	private Instructor instructorAffiliation;
+    @ElementCollection
+    @Column(name = "instructor_id")
+    private List<Long> instructorsAffiliation;
+
+
 	
-	public Affiliation(String nameAffiliation, String statusAffiliation, Coordinator coordinatorAffiliation, ScrumMaster scrumMasterAffiliation, Instructor instructorAffiliation) {
+	public Affiliation(String nameAffiliation, String statusAffiliation, Coordinator coordinatorAffiliation, ScrumMaster scrumMasterAffiliation, List<Long> instructorsAffiliation) {
 		this.nameAffiliation = nameAffiliation;
 		this.statusAffiliation = statusAffiliation;	
 		this.coordinatorAffiliation = coordinatorAffiliation;
 		this.scrumMasterAffiliation = scrumMasterAffiliation;
-		this.instructorAffiliation = instructorAffiliation;
+		this.instructorsAffiliation = instructorsAffiliation;
 	}
+	
+    public void setStudentsSquad(List<Long> instructorsAffiliations) {
+        this.instructorsAffiliation = instructorsAffiliations;
+    }
 }
