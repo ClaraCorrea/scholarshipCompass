@@ -1,6 +1,7 @@
 package clara.correa.scholarship.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import clara.correa.scholarship.dto.InstructorDtoRequest;
 import clara.correa.scholarship.dto.InstructorDtoResponse;
+import clara.correa.scholarship.exception.CustomResponse;
 import clara.correa.scholarship.service.InstructorService;
 
 @RestController
@@ -20,8 +22,9 @@ public class InstructorController {
 	private InstructorService instructorService;
 	
 	@PostMapping("/post")
-	public void postInstructor(@RequestBody InstructorDtoRequest instructorDtoRequest) {
-		instructorService.saveInstructor(instructorDtoRequest);
+	public ResponseEntity<CustomResponse> postInstructor(@RequestBody InstructorDtoRequest instructorDtoRequest) {
+		CustomResponse response = instructorService.saveInstructor(instructorDtoRequest);
+        return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping("/get/{idInstructor}")

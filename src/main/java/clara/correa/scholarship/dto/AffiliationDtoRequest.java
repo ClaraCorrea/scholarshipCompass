@@ -1,5 +1,7 @@
 package clara.correa.scholarship.dto;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import clara.correa.scholarship.entity.Coordinator;
@@ -20,7 +22,7 @@ public class AffiliationDtoRequest {
 	@JsonDeserialize
 	private Coordinator coordinatorAffiliation;
 	@JsonDeserialize
-	private ScrumMaster ScrumMasterAffiliation;
+	private ScrumMaster scrumMasterAffiliation;
 	@JsonDeserialize
-	private Instructor instructorAffiliation;
+    private List<Long> instructorsAffiliation;
 }

@@ -8,18 +8,22 @@ import lombok.Setter;
 
 @Entity
 @Table(name="coordinators")
-@RequiredArgsConstructor @Getter
+@RequiredArgsConstructor 
+@Getter
 public class Coordinator {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id_coordinator")
 	private Long idCoord;
 	
 	@Setter
+	@Column(name="name_coordinator")
 	private String nameCoord;
 	
 	@Setter
 	@Email
+	@Column(name="email_coordinator")
 	private String emailCoord;
 
 	public Coordinator(String nameCoord, String emailCoord) {
